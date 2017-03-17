@@ -15,6 +15,5 @@ dir.set('/test/foo', 'bar')
 print(dir.get('/test/foo'))
 
 print('Waiting for /test/foo...')
-dir.wait('/test/foo')
-print('Got /test/foo event')
+print(dir.wait('/test/foo'))
 ```
