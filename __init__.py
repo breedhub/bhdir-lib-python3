@@ -52,6 +52,24 @@ class Directory(object):
 
         return response['results'][0]
 
+    def unset(self, name):
+        request = {
+            'id': str(uuid.uuid1()),
+            'command': 'unset',
+            'args': [
+                name
+            ]
+        }
+
+        self._socket.send(json.dumps(request))
+        response = json.loads(self._socket.receive())
+
+        if response['id'] != request['id']:
+            raise RuntimeError('Invalid response from daemon')
+
+        if not response['success']:
+            raise RuntimeError('Error: %s' % response['message'])
+
     def wait(self, name, timeout=0):
         request = {
             'id': str(uuid.uuid1()),
