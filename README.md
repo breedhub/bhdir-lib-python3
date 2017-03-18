@@ -7,13 +7,28 @@
 # git clone https://github.com/breedhub/bhdir-lib-python3 bhdir
 #
 
+import time
+import sys
 import bhdir
 
 dir = bhdir.Directory()
 
-dir.set('/test/foo', 'bar')
-print(dir.get('/test/foo'))
 
-print('Waiting for /test/foo...')
-print(dir.wait('/test/foo'))
+start = time.time()
+foo = dir.get('/test/foo')
+end = time.time()
+print('/test/foo = %s (%.3f ms)' % (foo, round(end - start, 3)))
+
+start = time.time()
+dir.set('/test/foo', 'bar')
+end = time.time()
+print('Setting to "bar" (%.3f ms)' % round(end - start, 3))
+
+start = time.time()
+foo = dir.get('/test/foo')
+end = time.time()
+print('/test/foo = %s (%.3f ms)' % (foo, round(end - start, 3)))
+
+print('Deleting')
+dir.unset('/test/foo')
 ```
