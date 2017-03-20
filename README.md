@@ -13,7 +13,6 @@ import bhdir
 
 dir = bhdir.Directory()
 
-
 start = time.time()
 foo = dir.get('/test/foo')
 end = time.time()
