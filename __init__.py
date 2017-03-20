@@ -76,7 +76,7 @@ class Directory(object):
             'command': 'wait',
             'args': [
                 name,
-                timeout
+                round(timeout * 1000)
             ]
         }
 
@@ -90,7 +90,7 @@ class Directory(object):
             raise RuntimeError('Error: %s' % response['message'])
 
         if response['timeout']:
-            raise TimeoutException()
+            return self.get(name)
 
         return response['results'][0]
 
