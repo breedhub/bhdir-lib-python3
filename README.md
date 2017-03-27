@@ -13,25 +13,23 @@ import bhdir
 
 dir = bhdir.Directory()
 
-start = time.time()
-foo = dir.get('/test/foo')
-end = time.time()
-print('/test/foo = %s (%.3f ms)' % (foo, round(end - start, 3)))
+dir.set('/foo/bar', 'test')
+print(dir.get('/foo/bar'))
 
-start = time.time()
-dir.set('/test/foo', 'bar')
-end = time.time()
-print('Setting to "bar" (%.3f ms)' % round(end - start, 3))
+dir.set_attr('/foo/bar', 'custom', 123)
+print(dir.get_attr('/foo/bar', 'custom'))
 
-start = time.time()
-foo = dir.get('/test/foo')
-end = time.time()
-print('/test/foo = %s (%.3f ms)' % (foo, round(end - start, 3)))
+# get all: dir.get_attr('/foo/bar')
 
-sys.stdout.write('Waiting for /test/foo... ')
-sys.stdout.flush()
-print(dir.wait('/test/foo', 10))
+print(dir.ls('/foo'))
 
-print('Deleting')
-dir.unset('/test/foo')
+with open('/etc/shells', 'rb') as fd:
+    dir.upload('/foo/bar', fd)
+
+with open('/tmp/test', 'wb') as fd:
+    dir.download('/foo/bar', fd)
+
+# dir.del_attr('/foo/bar', 'custom')
+# dir.delete('/foo/bar')
+# dir.rm('/foo/bar')
 ```
