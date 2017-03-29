@@ -13,18 +13,18 @@ import bhdir
 
 dir = bhdir.Directory()
 
-dir.set('/foo/bar', 'test')
-print(dir.get('/foo/bar'))
+print("Set: %s" % dir.set('/foo/bar', 'test'))
+print("Get: %s" % dir.get('/foo/bar'))
 
-dir.set_attr('/foo/bar', 'custom', 123)
-print(dir.get_attr('/foo/bar', 'custom'))
+print("Set attr: %s" % dir.set_attr('/foo/bar', 'custom', 123))
+print("Get attr: %d" % dir.get_attr('/foo/bar', 'custom'))
 
 # get all: dir.get_attr('/foo/bar')
 
-print(dir.ls('/foo'))
+print("LS: %s" % dir.ls('/foo'))
 
 with open('/etc/shells', 'rb') as fd:
-    dir.upload('/foo/bar', fd)
+    print("Upload: %s" % dir.upload('/foo/bar', fd))
 
 with open('/tmp/test', 'wb') as fd:
     dir.download('/foo/bar', fd)
