@@ -238,6 +238,8 @@ class Directory(object):
         if not response['success']:
             raise RuntimeError('Error: %s' % response['message'])
 
+        return response['results'][0]
+
     def download(self, var_name, fd):
         request = {
             'id': str(uuid.uuid1()),
