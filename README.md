@@ -20,6 +20,7 @@ print("Set attr: %s" % dir.set_attr('/foo/bar', 'custom', 123))
 print("Get attr: %d" % dir.get_attr('/foo/bar', 'custom'))
 
 # get all: dir.get_attr('/foo/bar')
+# delete: dir.delete_attr('/foo/bar', 'custom')
 
 print("LS: %s" % dir.ls('/foo'))
 
@@ -28,6 +29,9 @@ with open('/etc/shells', 'rb') as fd:
 
 with open('/tmp/test', 'wb') as fd:
     dir.download('/foo/bar', fd)
+
+# dir.wait('/foo/bar')
+# dir.touch('/foo/bar')
 
 # dir.del_attr('/foo/bar', 'custom')
 # dir.delete('/foo/bar')

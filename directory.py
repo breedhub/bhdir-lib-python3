@@ -196,7 +196,7 @@ class Directory(object):
 
         return response['results'][0]
 
-    def del_attr(self, var_name, attr_name):
+    def delete_attr(self, var_name, attr_name):
         request = {
             'id': str(uuid.uuid1()),
             'command': 'del-attr',
@@ -258,5 +258,4 @@ class Directory(object):
         if not response['success']:
             raise RuntimeError('Error: %s' % response['message'])
 
-        fd.truncate()
         fd.write(base64.b64decode(response['results'][0].encode('ascii')))
