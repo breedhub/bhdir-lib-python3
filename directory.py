@@ -267,9 +267,11 @@ class Directory(object):
         contents = base64.b64decode(response['results'][0].encode('ascii'))
 
         if fd is None:
-            fd = open('/tmp/bhdir.' + self._random_filename(), 'wb')
+            fd = open('/tmp/bhdir.' + self._random_filename(), 'w+b')
 
         fd.write(contents)
+        fd.seek(0, 0)
+
         return fd
 
     def get_file(self, var_name, file_name):
