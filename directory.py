@@ -1,6 +1,8 @@
 import uuid
 import json
 import base64
+import string
+import random
 from .socket import *
 
 
@@ -215,7 +217,7 @@ class Directory(object):
         if not response['success']:
             raise RuntimeError('Error: %s' % response['message'])
 
-    def upload(self, var_name, fd):
+    def put_fd(self, fd, var_name):
         contents = fd.read()
         if isinstance(contents, str):
            raise RuntimeError('File should be opened in binary mode')
@@ -240,7 +242,11 @@ class Directory(object):
 
         return response['results'][0]
 
-    def download(self, var_name, fd):
+    def put_file(self, file_name, var_name):
+        with open(file_name, 'rb') as fd:
+            return self.put_fd(fd, var_name)
+
+    def get_fd(self, var_name, fd=None):
         request = {
             'id': str(uuid.uuid1()),
             'command': 'download',
@@ -258,4 +264,17 @@ class Directory(object):
         if not response['success']:
             raise RuntimeError('Error: %s' % response['message'])
 
-        fd.write(base64.b64decode(response['results'][0].encode('ascii')))
+        contents = base64.b64decode(response['results'][0].encode('ascii'))
+
+        if fd is None:
+            fd = open('/tmp/bhdir.' + self._random_filename(), 'wb')
+
+        fd.write(contents)
+        return fd
+
+    def get_file(self, var_name, file_name):
+        with open(file_name, 'wb') as fd:
+            self.get_fd(var_name, fd)
+
+    def _random_filename(self):
+        return ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(8))

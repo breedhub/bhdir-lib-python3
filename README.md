@@ -25,10 +25,16 @@ print("Get attr: %d" % dir.get_attr('/foo/bar', 'custom'))
 print("LS: %s" % dir.ls('/foo'))
 
 with open('/etc/shells', 'rb') as fd:
-    print("Upload: %s" % dir.upload('/foo/bar', fd))
+    print("Upload by fd: %s" % dir.put_fd(fd, '/foo/bar'))
 
-with open('/tmp/test', 'wb') as fd:
-    dir.download('/foo/bar', fd)
+print("Upload by path: %s" % dir.put_file('/etc/shells', '/foo/bar'))
+
+# get descriptor
+fd = dir.get_fd('/foo/bar')
+fd.close()
+
+# get file
+dir.get_file('/foo/bar', '/tmp/test')
 
 # dir.wait('/foo/bar')
 # dir.touch('/foo/bar')
