@@ -1,3 +1,4 @@
+import os
 import uuid
 import json
 import base64
@@ -237,7 +238,7 @@ class Directory(object):
         if not response['success']:
             raise RuntimeError('Error: %s' % response['message'])
 
-    def put_fd(self, fd, var_name):
+    def put_fd(self, fd, var_name, save_name=None):
         contents = fd.read()
         if isinstance(contents, str):
            raise RuntimeError('File should be opened in binary mode')
@@ -247,7 +248,8 @@ class Directory(object):
             'command': 'upload',
             'args': [
                 var_name,
-                base64.b64encode(contents).decode('ascii')
+                base64.b64encode(contents).decode('ascii'),
+                save_name
             ]
         }
 
@@ -264,7 +266,7 @@ class Directory(object):
 
     def put_file(self, file_name, var_name):
         with open(file_name, 'rb') as fd:
-            return self.put_fd(fd, var_name)
+            return self.put_fd(fd, var_name, os.path.basename(file_name))
 
     def get_fd(self, var_name, fd=None):
         request = {
