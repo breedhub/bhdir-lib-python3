@@ -23,6 +23,7 @@ print("Get attr: %d" % dir.get_attr('/foo/bar', 'custom'))
 # delete: dir.delete_attr('/foo/bar', 'custom')
 
 print("LS: %s" % dir.ls('/foo'))
+print("Exists: %s" % dir.exists('/foo'))
 
 with open('/etc/shells', 'rb') as fd:
     print("Upload by fd: %s" % dir.put_fd(fd, '/foo/bar'))
