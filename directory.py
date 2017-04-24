@@ -13,13 +13,34 @@ class TimeoutException(Exception):
 class Directory(object):
     def __init__(self, path=None):
         self._socket = Socket(path)
+        self._folder = None;
+        self._dir = '/';
+
+    def use(self, folder):
+        self._folder = folder
+
+    def cd(self, directory):
+        if directory == '/':
+            self._dir = '/'
+        else:
+            if directory[len(directory)-1] != '/':
+                directory = directory + '/'
+            if directory[0] == '/':
+                self._dir = directory
+            else:
+                self._dir = self._dir + directory
+
+        return self._dir
+
+    def cwd(self):
+        return self._dir
 
     def ls(self, name):
         request = {
             'id': str(uuid.uuid1()),
             'command': 'ls',
             'args': [
-                name
+                self._normalize(name)
             ]
         }
 
@@ -42,7 +63,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'set',
             'args': [
-                name,
+                self._normalize(name),
                 value
             ]
         }
@@ -63,7 +84,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'get',
             'args': [
-                name
+                self._normalize(name)
             ]
         }
 
@@ -83,7 +104,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'del',
             'args': [
-                name
+                self._normalize(name)
             ]
         }
 
@@ -101,7 +122,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'rm',
             'args': [
-                name
+                self._normalize(name)
             ]
         }
 
@@ -119,7 +140,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'exists',
             'args': [
-                name
+                self._normalize(name)
             ]
         }
 
@@ -139,7 +160,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'wait',
             'args': [
-                name,
+                self._normalize(name),
                 round(timeout * 1000)
             ]
         }
@@ -160,7 +181,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'touch',
             'args': [
-                name
+                self._normalize(name)
             ]
         }
 
@@ -181,7 +202,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'set-attr',
             'args': [
-                var_name,
+                self._normalize(var_name),
                 attr_name,
                 value
             ]
@@ -203,7 +224,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'get-attr',
             'args': [
-                var_name,
+                self._normalize(var_name),
                 attr_name
             ]
         }
@@ -224,7 +245,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'del-attr',
             'args': [
-                var_name,
+                self._normalize(var_name),
                 attr_name
             ]
         }
@@ -247,7 +268,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'upload',
             'args': [
-                var_name,
+                self._normalize(var_name),
                 base64.b64encode(contents).decode('ascii'),
                 save_name
             ]
@@ -273,7 +294,7 @@ class Directory(object):
             'id': str(uuid.uuid1()),
             'command': 'download',
             'args': [
-                var_name
+                self._normalize(var_name)
             ]
         }
 
@@ -299,6 +320,22 @@ class Directory(object):
     def get_file(self, var_name, file_name):
         with open(file_name, 'wb') as fd:
             self.get_fd(var_name, fd)
+
+    def _normalize(self, var_name):
+        if ':' in var_name:
+            return var_name
+
+        if self._folder is None:
+            result = ''
+        else:
+            result = self._folder + ':'
+
+        if var_name[0] == '/':
+            result = result + var_name
+        else:
+            result = result + self._dir + var_name
+
+        return result
 
     def _random_filename(self):
         return ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(8))
