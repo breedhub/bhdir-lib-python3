@@ -13,6 +13,9 @@ import bhdir
 
 dir = bhdir.Directory()
 
+dir.use('sync')
+dir.cd('/')
+
 print("Set: %s" % dir.set('/foo/bar', 'test'))
 print("Get: %s" % dir.get('/foo/bar'))
 
