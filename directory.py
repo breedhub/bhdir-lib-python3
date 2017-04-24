@@ -33,7 +33,9 @@ class Directory(object):
         return self._dir
 
     def cwd(self):
-        return self._dir
+        if self._dir == '/':
+            return self._dir
+        return self._dir[:-1]
 
     def ls(self, name):
         request = {
